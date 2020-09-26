@@ -23,11 +23,14 @@ func GetTwitterApi(conf config.TwitterConfig) *TweetApi {
 func (ta *TweetApi) Tweet(text string, imgPath string) {
 
 	str := encode(imgPath)
-	media, _ := ta.api.UploadMedia(str)
+	media, err := ta.api.UploadMedia(str)
+	if err != nil{
+		fmt.Println(err)
+	}
 	v := url.Values{}
 	v.Add("media_ids", media.MediaIDString)
 
-	_, err := ta.api.PostTweet(text, v)
+	_, err = ta.api.PostTweet(text, v)
 	if err != nil {
 		panic(err)
 	}
