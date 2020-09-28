@@ -10,6 +10,7 @@ type TwitterConfig struct {
 	ApiKeySecret      string
 	AccessToken       string
 	AccessTokenSecret string
+	TimeoutSecond     int
 }
 
 func ReadConfig(path string) (*TwitterConfig, bool) {

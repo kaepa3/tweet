@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/kaepa3/tweet/config"
@@ -17,14 +18,18 @@ type TweetApi struct {
 func GetTwitterApi(conf config.TwitterConfig) *TweetApi {
 	anaconda.SetConsumerKey(conf.ApiKey)
 	anaconda.SetConsumerSecret(conf.ApiKeySecret)
-	return &TweetApi{anaconda.NewTwitterApi(conf.AccessToken, conf.AccessTokenSecret)}
+	api := &TweetApi{anaconda.NewTwitterApi(conf.AccessToken, conf.AccessTokenSecret)}
+	if conf.TimeoutSecond != 0 {
+		api.api.HttpClient.Timeout = time.Duration(conf.TimeoutSecond) * time.Second
+	}
+	return api
 }
 
 func (ta *TweetApi) Tweet(text string, imgPath string) {
 
 	str := encode(imgPath)
 	media, err := ta.api.UploadMedia(str)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	v := url.Values{}
